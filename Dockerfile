@@ -2,6 +2,7 @@ FROM ubuntu:24.04
 
 RUN apt-get update && \
     apt-get install -y \
+    nginx \
     libfontconfig1 \
     libxcursor1 \
     libxinerama1 \
@@ -14,11 +15,13 @@ RUN apt-get update && \
 WORKDIR /app
 
 COPY server/ /app/
+COPY nginx.conf /etc/nginx/nginx.conf
 
 RUN chmod +x /app/new-fighting-game.x86_64
 
-EXPOSE 8564/udp
-EXPOSE 8564/tcp
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
 
-ENTRYPOINT ["/app/new-fighting-game.x86_64"]
-CMD ["--headless", "--server", "--verbose"]
+EXPOSE 10000
+
+ENTRYPOINT ["/start.sh"]
